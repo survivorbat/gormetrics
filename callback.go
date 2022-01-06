@@ -18,7 +18,7 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
-	"github.com/profects/gormetrics/gormi"
+	"github.com/survivorbat/gormetrics/gormi"
 
 	"github.com/prometheus/client_golang/prometheus"
 )
