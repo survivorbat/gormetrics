@@ -16,9 +16,9 @@ package gormetrics
 
 import (
 	"fmt"
+	"gorm.io/gorm"
 
 	"github.com/pkg/errors"
-	"github.com/survivorbat/gormetrics/gormi"
 
 	"github.com/prometheus/client_golang/prometheus"
 )
@@ -31,7 +31,9 @@ type callbackHandler struct {
 	defaultLabels map[string]string
 }
 
-func (h *callbackHandler) registerCallback(cb gormi.Callback) {
+func (h *callbackHandler) registerCallback(db *gorm.DB) {
+	cb := db.Callback()
+
 	cb.Create().After("gorm:after_create").Register(
 		h.opts.callbackName("after_create"),
 		h.afterCreate,
@@ -53,19 +55,19 @@ func (h *callbackHandler) registerCallback(cb gormi.Callback) {
 	)
 }
 
-func (h *callbackHandler) afterCreate(scope gormi.Scope) {
+func (h *callbackHandler) afterCreate(scope *gorm.DB) {
 	h.updateVectors(scope, h.counters.creates)
 }
 
-func (h *callbackHandler) afterDelete(scope gormi.Scope) {
+func (h *callbackHandler) afterDelete(scope *gorm.DB) {
 	h.updateVectors(scope, h.counters.deletes)
 }
 
-func (h *callbackHandler) afterQuery(scope gormi.Scope) {
+func (h *callbackHandler) afterQuery(scope *gorm.DB) {
 	h.updateVectors(scope, h.counters.queries)
 }
 
-func (h *callbackHandler) afterUpdate(scope gormi.Scope) {
+func (h *callbackHandler) afterUpdate(scope *gorm.DB) {
 	h.updateVectors(scope, h.counters.updates)
 }
 
@@ -74,12 +76,12 @@ func (h *callbackHandler) afterUpdate(scope gormi.Scope) {
 // scope.DB().GetErrors(), a status "fail" will be assigned to the increment.
 // Otherwise, a status "success" will be assigned.
 // Increments h.gauges.all (gormetrics_all_total) by default.
-func (h *callbackHandler) updateVectors(scope gormi.Scope, vectors ...*prometheus.CounterVec) {
+func (h *callbackHandler) updateVectors(scope *gorm.DB, vectors ...*prometheus.CounterVec) {
 	vectors = append(vectors, h.counters.all)
 
-	hasError := scope.DB().Error() != nil
+	_, err := scope.DB()
 	status := metricStatusFail
-	if !hasError {
+	if err == nil {
 		status = metricStatusSuccess
 	}
 
