@@ -35,13 +35,18 @@ var collectors = globalCollectors{
 	database: make(map[string]*databaseGauges),
 }
 
-// queryCounters contains all gauges that are exported.
+// queryCounters contains all histograms that are exported.
 type queryCounters struct {
-	all     *prometheus.CounterVec
-	creates *prometheus.CounterVec
-	deletes *prometheus.CounterVec
-	queries *prometheus.CounterVec
-	updates *prometheus.CounterVec
+	all                *prometheus.CounterVec
+	allAverageTime     *prometheus.HistogramVec
+	creates            *prometheus.CounterVec
+	createsAverageTime *prometheus.HistogramVec
+	deletes            *prometheus.CounterVec
+	deletesAverageTime *prometheus.HistogramVec
+	queries            *prometheus.CounterVec
+	queriesAverageTime *prometheus.HistogramVec
+	updates            *prometheus.CounterVec
+	updatesAverageTime *prometheus.HistogramVec
 }
 
 func newQueryCounters(namespace string) (*queryCounters, error) {
@@ -61,20 +66,39 @@ func newQueryCounters(namespace string) (*queryCounters, error) {
 		},
 	}
 
+	hc := histogramVecCreator{
+		namespace: namespace,
+		labels: []string{
+			labelDatabase,
+			labelDriver,
+			labelStatus,
+		},
+	}
+
 	qc := queryCounters{
-		all:     cc.new(metricAllTotal, helpAllTotal),
-		creates: cc.new(metricCreatesTotal, helpCreatesTotal),
-		deletes: cc.new(metricDeletesTotal, helpDeletesTotal),
-		queries: cc.new(metricQueriesTotal, helpQueriesTotal),
-		updates: cc.new(metricUpdatesTotal, helpUpdatesTotal),
+		all:                cc.new(metricAllTotal, helpAllTotal),
+		allAverageTime:     hc.new(metricAllAverageTime, helpAllAverageTime),
+		creates:            cc.new(metricCreatesTotal, helpCreatesTotal),
+		createsAverageTime: hc.new(metricCreatesAverageTime, helpCreatesAverageTime),
+		deletes:            cc.new(metricDeletesTotal, helpDeletesTotal),
+		deletesAverageTime: hc.new(metricDeletesAverageTime, helpDeletesAverageTime),
+		queries:            cc.new(metricQueriesTotal, helpQueriesTotal),
+		queriesAverageTime: hc.new(metricQueriesAverageTime, helpQueriesAverageTime),
+		updates:            cc.new(metricUpdatesTotal, helpUpdatesTotal),
+		updatesAverageTime: hc.new(metricUpdatesAverageTime, helpUpdatesAverageTime),
 	}
 
 	if err := registerCollectors(
 		qc.all,
+		qc.allAverageTime,
 		qc.creates,
+		qc.createsAverageTime,
 		qc.deletes,
+		qc.deletesAverageTime,
 		qc.queries,
+		qc.queriesAverageTime,
 		qc.updates,
+		qc.updatesAverageTime,
 	); err != nil {
 		return nil, errors.Wrap(err, "could not register collectors")
 	}

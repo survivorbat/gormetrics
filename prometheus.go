@@ -61,3 +61,26 @@ func (c gaugeVecCreator) new(
 		c.labels,
 	)
 }
+
+// histogramVecCreator allows for mass creation of histogram vectors in the same
+// Prometheus namespace and with equal constant labels.
+type histogramVecCreator struct {
+	namespace string
+	labels    []string
+}
+
+// new creates a new prometheus.GaugeVec based on the specified name and
+// values in the counterCreator.
+func (c histogramVecCreator) new(
+	name string,
+	help string,
+) *prometheus.HistogramVec {
+	return prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Namespace: c.namespace,
+			Name:      name,
+			Help:      help,
+		},
+		c.labels,
+	)
+}
