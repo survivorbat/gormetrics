@@ -156,8 +156,8 @@ func (h *callbackHandler) updateHistogramVectors(db *gorm.DB, vectors ...*promet
 			continue
 		}
 
-		elapsed := time.Since(startTime.(time.Time)).Seconds()
-		histogram.With(labels).Observe(elapsed)
+		elapsed := time.Since(startTime.(time.Time)).Milliseconds()
+		histogram.With(labels).Observe(float64(elapsed))
 	}
 }
 

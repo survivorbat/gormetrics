@@ -43,13 +43,13 @@ const (
 	metricUpdatesDuration = "updates_duration"
 
 	helpAllTotal        = `All queries requested`
-	helpAllDuration     = `Duration of all queries requested in seconds`
+	helpAllDuration     = `Duration of all queries requested in milliseconds`
 	helpCreatesTotal    = `All create queries requested`
-	helpCreatesDuration = `Duration of all create queries requested in seconds`
+	helpCreatesDuration = `Duration of all create queries requested in milliseconds`
 	helpDeletesTotal    = `All delete queries requested`
-	helpDeletesDuration = `Duration of all delete queries requested in seconds`
+	helpDeletesDuration = `Duration of all delete queries requested in milliseconds`
 	helpQueriesTotal    = `All select queries requested`
-	helpQueriesDuration = `Duration of all select queries requested in seconds`
+	helpQueriesDuration = `Duration of all select queries requested in milliseconds`
 	helpUpdatesTotal    = `All update queries requested`
-	helpUpdatesDuration = `Duration of all update queries requested in seconds`
+	helpUpdatesDuration = `Duration of all update queries requested in milliseconds`
 )
