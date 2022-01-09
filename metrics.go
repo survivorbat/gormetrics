@@ -31,25 +31,25 @@ const (
 	helpIdleConnections  = `Currently idle connections to the database`
 	helpInUseConnections = `Currently in use connections`
 
-	metricAllTotal           = "all_total"
-	metricAllAverageTime     = "all_total_average_time"
-	metricCreatesTotal       = "creates_total"
-	metricCreatesAverageTime = "creates_average_time"
-	metricDeletesTotal       = "deletes_total"
-	metricDeletesAverageTime = "deletes_average_time"
-	metricQueriesTotal       = "queries_total"
-	metricQueriesAverageTime = "queries_average_time"
-	metricUpdatesTotal       = "updates_total"
-	metricUpdatesAverageTime = "updates_average_time"
+	metricAllTotal        = "all_total"
+	metricAllDuration     = "all_total_time"
+	metricCreatesTotal    = "creates_total"
+	metricCreatesDuration = "creates_duration"
+	metricDeletesTotal    = "deletes_total"
+	metricDeletesDuration = "deletes_duration"
+	metricQueriesTotal    = "queries_total"
+	metricQueriesDuration = "queries_duration"
+	metricUpdatesTotal    = "updates_total"
+	metricUpdatesDuration = "updates_duration"
 
-	helpAllTotal           = `All queries requested`
-	helpAllAverageTime     = `Average time of all queries requested`
-	helpCreatesTotal       = `All create queries requested`
-	helpCreatesAverageTime = `Average time of allcreate queries requested`
-	helpDeletesTotal       = `All delete queries requested`
-	helpDeletesAverageTime = `Average time of all delete queries requested`
-	helpQueriesTotal       = `All select queries requested`
-	helpQueriesAverageTime = `Average time of all select queries requested`
-	helpUpdatesTotal       = `All update queries requested`
-	helpUpdatesAverageTime = `Average time of all update queries requested`
+	helpAllTotal        = `All queries requested`
+	helpAllDuration     = `Duration of all queries requested in seconds`
+	helpCreatesTotal    = `All create queries requested`
+	helpCreatesDuration = `Duration of all create queries requested in seconds`
+	helpDeletesTotal    = `All delete queries requested`
+	helpDeletesDuration = `Duration of all delete queries requested in seconds`
+	helpQueriesTotal    = `All select queries requested`
+	helpQueriesDuration = `Duration of all select queries requested in seconds`
+	helpUpdatesTotal    = `All update queries requested`
+	helpUpdatesDuration = `Duration of all update queries requested in seconds`
 )

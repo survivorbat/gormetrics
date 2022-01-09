@@ -80,6 +80,20 @@ func (c histogramVecCreator) new(
 			Namespace: c.namespace,
 			Name:      name,
 			Help:      help,
+			// TODO: Refine these
+			Buckets: []float64{
+				0.0005,
+				0.001,
+				0.005,
+				0.01,
+				0.05,
+				0.5,
+				1,
+				2,
+				4,
+				6,
+				8,
+			},
 		},
 		c.labels,
 	)

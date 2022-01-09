@@ -35,7 +35,7 @@ type callbackHandler struct {
 func (h *callbackHandler) registerCallback(db *gorm.DB) {
 	cb := db.Callback()
 
-	cb.Create().Before("gorm:before_create").Register(
+	cb.Create().Before("gorm:create").Register(
 		h.opts.callbackName("before_create"),
 		h.setStartTime,
 	)
@@ -45,7 +45,7 @@ func (h *callbackHandler) registerCallback(db *gorm.DB) {
 		h.afterCreate,
 	)
 
-	cb.Delete().Before("gorm:before_delete").Register(
+	cb.Delete().Before("gorm:delete").Register(
 		h.opts.callbackName("before_delete"),
 		h.setStartTime,
 	)
@@ -55,7 +55,7 @@ func (h *callbackHandler) registerCallback(db *gorm.DB) {
 		h.afterDelete,
 	)
 
-	cb.Query().Before("gorm:before_query").Register(
+	cb.Query().Before("gorm:query").Register(
 		h.opts.callbackName("before_query"),
 		h.setStartTime,
 	)
@@ -65,7 +65,7 @@ func (h *callbackHandler) registerCallback(db *gorm.DB) {
 		h.afterQuery,
 	)
 
-	cb.Update().Before("gorm:before_update").Register(
+	cb.Update().Before("gorm:update").Register(
 		h.opts.callbackName("before_update"),
 		h.setStartTime,
 	)
@@ -77,34 +77,34 @@ func (h *callbackHandler) registerCallback(db *gorm.DB) {
 }
 
 func (h *callbackHandler) setStartTime(db *gorm.DB) {
-	db.Set("startTime", time.Now())
+	db.Set("timeStart", time.Now())
 }
 
 func (h *callbackHandler) afterCreate(db *gorm.DB) {
 	h.updateCounterVectors(db, h.counters.creates)
-	h.updateHistogramVectors(db, h.counters.createsAverageTime)
+	h.updateHistogramVectors(db, h.counters.createsDuration)
 }
 
 func (h *callbackHandler) afterDelete(db *gorm.DB) {
 	h.updateCounterVectors(db, h.counters.deletes)
-	h.updateHistogramVectors(db, h.counters.deletesAverageTime)
+	h.updateHistogramVectors(db, h.counters.deletesDuration)
 }
 
 func (h *callbackHandler) afterQuery(db *gorm.DB) {
 	h.updateCounterVectors(db, h.counters.queries)
-	h.updateHistogramVectors(db, h.counters.queriesAverageTime)
+	h.updateHistogramVectors(db, h.counters.queriesDuration)
 }
 
 func (h *callbackHandler) afterUpdate(db *gorm.DB) {
 	h.updateCounterVectors(db, h.counters.updates)
-	h.updateHistogramVectors(db, h.counters.updatesAverageTime)
+	h.updateHistogramVectors(db, h.counters.updatesDuration)
 }
 
-// updateHistogramVectors registers one or more of prometheus.CounterVec to increment
+// updateCounterVectors registers one or more of prometheus.CounterVec to increment
 // with the status in db (any type of query). If any errors are in
 // db.DB().GetErrors(), a status "fail" will be assigned to the increment.
 // Otherwise, a status "success" will be assigned.
-// Increments h.gauges.all (gormetrics_all_total) by default.
+// Increments h.counters.all (gormetrics_all_total) by default.
 func (h *callbackHandler) updateCounterVectors(db *gorm.DB, vectors ...*prometheus.CounterVec) {
 	vectors = append(vectors, h.counters.all)
 
@@ -127,13 +127,13 @@ func (h *callbackHandler) updateCounterVectors(db *gorm.DB, vectors ...*promethe
 	}
 }
 
-// updateCounterVectors registers one or more of prometheus.CounterVec to increment
+// updateHistogramVectors registers one or more of prometheus.HistogramVec to add observations to
 // with the status in db (any type of query). If any errors are in
 // db.DB().GetErrors(), a status "fail" will be assigned to the increment.
 // Otherwise, a status "success" will be assigned.
-// Increments h.gauges.all (gormetrics_all_total) by default.
+// Increments h.counters.allDuration (gormetrics_all_total) by default.
 func (h *callbackHandler) updateHistogramVectors(db *gorm.DB, vectors ...*prometheus.HistogramVec) {
-	vectors = append(vectors, h.counters.allAverageTime)
+	vectors = append(vectors, h.counters.allDuration)
 
 	_, err := db.DB()
 	status := metricStatusFail
@@ -145,21 +145,19 @@ func (h *callbackHandler) updateHistogramVectors(db *gorm.DB, vectors ...*promet
 		labelStatus: status,
 	}, h.defaultLabels)
 
-	for _, counter := range vectors {
-		if counter == nil {
+	for _, histogram := range vectors {
+		if histogram == nil {
 			continue
 		}
 
 		startTime, ok := db.Get("timeStart")
 
 		if !ok {
-			status = metricStatusFail
-			return
+			continue
 		}
 
 		elapsed := time.Since(startTime.(time.Time)).Seconds()
-
-		counter.With(labels).Observe(elapsed)
+		histogram.With(labels).Observe(elapsed)
 	}
 }
 
