@@ -39,10 +39,10 @@ go func() {
 | Counter   | gormetrics_updates_total      | Counts how many update-queries have been performed    |
 | Counter   | gormetrics_queries_total      | Counts how many select-queries have been performed    |
 | Histogram | gormetrics_all_duration       | A histogram of all query durations in milliseconds    |
-| Histogram | gormetrics_creates_durationn  | A histogram of create-query durations in milliseconds |
-| Histogram | gormetrics_deletes_durationn  | A histogram of delete-query durations in milliseconds |
-| Histogram | gormetrics_updates_durationn  | A histogram of update-query durations in milliseconds |
-| Histogram | gormetrics_queries_durationn  | A histogram of select-query durations in milliseconds |
+| Histogram | gormetrics_creates_duration   | A histogram of create-query durations in milliseconds |
+| Histogram | gormetrics_deletes_duration   | A histogram of delete-query durations in milliseconds |
+| Histogram | gormetrics_updates_duration   | A histogram of update-query durations in milliseconds |
+| Histogram | gormetrics_queries_duration   | A histogram of select-query durations in milliseconds |
 | Gauge     | gormetrics_connections_idle   | Amount of idle connections                            |
 | Gauge     | gormetrics_connections_in_use | Amount of in-use connections                          |
 | Gauge     | gormetrics_connections_open   | Amount of open connections                            |
