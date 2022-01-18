@@ -32,7 +32,7 @@ const (
 	helpInUseConnections = `Currently in use connections`
 
 	metricAllTotal        = "all_total"
-	metricAllDuration     = "all_total_time"
+	metricAllDuration     = "all_duration"
 	metricCreatesTotal    = "creates_total"
 	metricCreatesDuration = "creates_duration"
 	metricDeletesTotal    = "deletes_total"
