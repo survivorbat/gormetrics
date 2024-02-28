@@ -52,3 +52,19 @@ These all have the following labels:
 - `database`: the name of the database
 - `driver`: the driver for the database (e.g. pq)
 - `status`: fail or success (only for query-related metrics)
+
+## Exclusions to monitoring
+
+If you want certain gorm-related queries to not be monitored and have metrics, there is a special field you can set.
+
+```go
+db.dbResult.Set("gormmetrics", false)
+```
+
+This will make sure whatever happens next is not part of the metrics-data.
+The only value for which exclusions are applicable, is the boolean 'false'.
+Be sure to un-set this flag after the exclusion-part in your code.
+
+```go
+db.dbResult.Set("gormmetrics", true)
+```
