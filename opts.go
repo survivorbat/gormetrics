@@ -14,6 +14,10 @@
 
 package gormetrics
 
+const (
+	DisableGormMetricsDatabaseKey = "gormmetrics-enabled"
+)
+
 // RegisterOpt if a function that operates on pluginOpts, configuring one or
 // more parameters of the plugin options.
 type RegisterOpt func(o *pluginOpts)

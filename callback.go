@@ -82,7 +82,7 @@ func (h *callbackHandler) setStartTime(db *gorm.DB) {
 }
 
 func checkRegistration(db *gorm.DB) bool {
-	value, ok := db.Get("gormmetrics-enabled")
+	value, ok := db.Get(DisableGormMetricsDatabaseKey)
 
 	// If value is not specifically set, it should be registered
 	if !ok {

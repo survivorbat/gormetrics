@@ -58,7 +58,7 @@ These all have the following labels:
 If you want certain gorm-related queries to not be monitored and have metrics, there is a special field you can set.
 
 ```go
-db.dbResult.Set("gormmetrics", false)
+db.dbResult.Set(gormetrics.DisableGormMetricsDatabaseKey, false)
 ```
 
 This will make sure whatever happens next is not part of the metrics-data.
@@ -66,5 +66,5 @@ The only value for which exclusions are applicable, is the boolean 'false'.
 Be sure to un-set this flag after the exclusion-part in your code.
 
 ```go
-db.dbResult.Set("gormmetrics", true)
+db.dbResult.Set(gormetrics.DisableGormMetricsDatabaseKey, true)
 ```
