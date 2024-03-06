@@ -81,6 +81,7 @@ func (h *callbackHandler) setStartTime(db *gorm.DB) {
 	db.Set("timeStart", time.Now())
 }
 
+// checkRegistration will check if the metrics should be registered
 func checkRegistration(db *gorm.DB) bool {
 	value, ok := db.Get(DisableGormMetricsDatabaseKey)
 

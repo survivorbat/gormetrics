@@ -15,6 +15,7 @@
 package gormetrics
 
 const (
+	// DisableGormMetricsDatabaseKey can be set on the *gorm.DB object to (temporarily) disable metrics on a particular query
 	DisableGormMetricsDatabaseKey = "gormmetrics-enabled"
 )
 
