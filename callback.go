@@ -16,8 +16,9 @@ package gormetrics
 
 import (
 	"fmt"
-	"gorm.io/gorm"
 	"time"
+
+	"gorm.io/gorm"
 
 	"github.com/pkg/errors"
 
@@ -80,24 +81,52 @@ func (h *callbackHandler) setStartTime(db *gorm.DB) {
 	db.Set("timeStart", time.Now())
 }
 
+// checkRegistration will check if the metrics should be registered
+func checkRegistration(db *gorm.DB) bool {
+	value, ok := db.Get(DisableGormMetricsDatabaseKey)
+
+	// If value is not specifically set, it should be registered
+	if !ok {
+		return true
+	}
+
+	valueBool, ok := value.(bool)
+
+	// If value was not a boolean, it should be registered
+	if !ok {
+		return true
+	}
+
+	// If all fetching and casting worked, return the actual value present
+	return valueBool
+}
+
 func (h *callbackHandler) afterCreate(db *gorm.DB) {
-	h.updateCounterVectors(db, h.counters.creates)
-	h.updateHistogramVectors(db, h.counters.createsDuration)
+	if checkRegistration(db) {
+		h.updateCounterVectors(db, h.counters.creates)
+		h.updateHistogramVectors(db, h.counters.createsDuration)
+	}
 }
 
 func (h *callbackHandler) afterDelete(db *gorm.DB) {
-	h.updateCounterVectors(db, h.counters.deletes)
-	h.updateHistogramVectors(db, h.counters.deletesDuration)
+	if checkRegistration(db) {
+		h.updateCounterVectors(db, h.counters.deletes)
+		h.updateHistogramVectors(db, h.counters.deletesDuration)
+	}
 }
 
 func (h *callbackHandler) afterQuery(db *gorm.DB) {
-	h.updateCounterVectors(db, h.counters.queries)
-	h.updateHistogramVectors(db, h.counters.queriesDuration)
+	if checkRegistration(db) {
+		h.updateCounterVectors(db, h.counters.queries)
+		h.updateHistogramVectors(db, h.counters.queriesDuration)
+	}
 }
 
 func (h *callbackHandler) afterUpdate(db *gorm.DB) {
-	h.updateCounterVectors(db, h.counters.updates)
-	h.updateHistogramVectors(db, h.counters.updatesDuration)
+	if checkRegistration(db) {
+		h.updateCounterVectors(db, h.counters.updates)
+		h.updateHistogramVectors(db, h.counters.updatesDuration)
+	}
 }
 
 // updateCounterVectors registers one or more of prometheus.CounterVec to increment

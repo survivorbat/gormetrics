@@ -14,6 +14,11 @@
 
 package gormetrics
 
+const (
+	// DisableGormMetricsDatabaseKey can be set on the *gorm.DB object to (temporarily) disable metrics on a particular query
+	DisableGormMetricsDatabaseKey = "gormmetrics-enabled"
+)
+
 // RegisterOpt if a function that operates on pluginOpts, configuring one or
 // more parameters of the plugin options.
 type RegisterOpt func(o *pluginOpts)
